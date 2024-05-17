@@ -11,6 +11,7 @@ using ParamsMap = std::map<std::string, double>;
 class GraphInfo {
    public:
     void add_param(std::string name, int value);
+    void add_block(BlockTagInfo block);
     void print_params() const;
     void print_graph() const;
     ParamsMap& get_params();

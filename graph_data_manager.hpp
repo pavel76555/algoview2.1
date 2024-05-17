@@ -9,7 +9,7 @@ using EdgeId = int;
 using CoordType = int;
 
 struct Vertex {
-    int block_id;
+    std::string block_id;
     int i, j, k;
     int level = 0;
     std::string type = "0";

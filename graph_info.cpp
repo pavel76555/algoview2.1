@@ -6,6 +6,10 @@ void GraphInfo::add_param(std::string name, int value) {
     params_[name] = value;
 }
 
+void GraphInfo::add_block(BlockTagInfo block) {
+    blocks_.add_block(std::move(block));
+}
+
 void GraphInfo::print_params() const {
     std::cout << "\t\t\tPARAMS" << std::endl;
     for (const auto& param : params_) {

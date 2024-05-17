@@ -92,7 +92,7 @@ void parse_value(const std::string& str, std::string& left_value, std::string& r
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_arg_element(const Value& arg_tag, GraphInfo& graph) {
+void JSON_Traverser::traverse_arg_element(const Value& arg_tag, BlockTagInfo &block, GraphInfo& graph) {
     const std::string func_name = "traverse_arg_element";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -136,8 +136,6 @@ void JSON_Traverser::traverse_arg_element(const Value& arg_tag, GraphInfo& graph
     }
     logger.log_char_msg("Arg val range = ", arg_tag["@val"].GetString());
 
-    BlockTagsInfo& blocks = graph.get_blocks();
-    BlockTagInfo& block = blocks.get_last_block();
     ArgTagsInfo& args = block.get_args();
     const ParamsMap& params = graph.get_params();
 
@@ -157,7 +155,7 @@ void JSON_Traverser::traverse_arg_element(const Value& arg_tag, GraphInfo& graph
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_arg(const Value& arg_tag, GraphInfo& graph) {
+void JSON_Traverser::traverse_arg(const Value& arg_tag, BlockTagInfo &block, GraphInfo& graph) {
     const std::string func_name = "traverse_arg";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -165,10 +163,10 @@ void JSON_Traverser::traverse_arg(const Value& arg_tag, GraphInfo& graph) {
 
     if (arg_tag.IsArray()) {
         for (SizeType i = 0; i < arg_tag.Size(); i++) {
-            traverse_arg_element(arg_tag[i], graph);
+            traverse_arg_element(arg_tag[i], block, graph);
         }
     } else if (arg_tag.IsObject()) {
-        traverse_arg_element(arg_tag, graph);
+        traverse_arg_element(arg_tag, block, graph);
     } else {
         logger.log_err_msg(func_name, file_name, "Arg tag has undefined type");
         logger.add_user_error("System error");
@@ -181,7 +179,7 @@ void JSON_Traverser::traverse_arg(const Value& arg_tag, GraphInfo& graph) {
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_vertex_in_element(const Value& in_tag, GraphInfo& graph) {
+void JSON_Traverser::traverse_vertex_in_element(const Value& in_tag, BlockTagInfo &block, GraphInfo& graph) {
     const std::string func_name = "traverse_vertex_in_element";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -207,8 +205,6 @@ void JSON_Traverser::traverse_vertex_in_element(const Value& in_tag, GraphInfo& 
         output_file.fatal_error_report();
         exit(1);
     }
-    BlockTagsInfo& blocks = graph.get_blocks();
-    BlockTagInfo& block = blocks.get_last_block();
     VertexTagsInfo& vertices = block.get_vertices();
     if (in_tag.HasMember("@bsrc")) {
         if (!in_tag["@bsrc"].IsString()) {
@@ -220,7 +216,7 @@ void JSON_Traverser::traverse_vertex_in_element(const Value& in_tag, GraphInfo& 
         }
         logger.log_char_msg("bsrc block id = ", in_tag["@bsrc"].GetString());
         logger.log_char_msg("src coordinates = ", in_tag["@src"].GetString());
-        vertices.add_bsrc(std::make_pair(std::stoi(in_tag["@bsrc"].GetString()), in_tag["@src"].GetString()));
+        vertices.add_bsrc(std::make_pair(in_tag["@bsrc"].GetString(), in_tag["@src"].GetString()));
         // printf("bsrc = %s src = %s\n", in_tag["@bsrc"].GetString(), in_tag["@src"].GetString());
     } else {
         logger.log_char_msg("src coordinates = ", in_tag["@src"].GetString());
@@ -230,7 +226,7 @@ void JSON_Traverser::traverse_vertex_in_element(const Value& in_tag, GraphInfo& 
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_vertex_in(const Value& in_tag, GraphInfo& graph) {
+void JSON_Traverser::traverse_vertex_in(const Value& in_tag, BlockTagInfo &block, GraphInfo& graph) {
     const std::string func_name = "traverse_vertex_in";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -238,10 +234,10 @@ void JSON_Traverser::traverse_vertex_in(const Value& in_tag, GraphInfo& graph) {
 
     if (in_tag.IsArray()) {
         for (SizeType i = 0; i < in_tag.Size(); i++) {
-            traverse_vertex_in_element(in_tag[i], graph);
+            traverse_vertex_in_element(in_tag[i], block, graph);
         }
     } else if (in_tag.IsObject()) {
-        traverse_vertex_in_element(in_tag, graph);
+        traverse_vertex_in_element(in_tag, block, graph);
     } else {
         logger.log_err_msg(func_name, file_name, "In tag has undefined type");
         logger.add_user_error("System error");
@@ -254,7 +250,7 @@ void JSON_Traverser::traverse_vertex_in(const Value& in_tag, GraphInfo& graph) {
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_vertex_element(const Value& vertex_tag, GraphInfo& graph) {
+void JSON_Traverser::traverse_vertex_element(const Value& vertex_tag, BlockTagInfo &block, GraphInfo& graph) {
     const std::string func_name = "traverse_vertex_element";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -280,8 +276,6 @@ void JSON_Traverser::traverse_vertex_element(const Value& vertex_tag, GraphInfo&
         output_file.fatal_error_report();
         exit(1);
     }
-    BlockTagsInfo& blocks = graph.get_blocks();
-    BlockTagInfo& block = blocks.get_last_block();
     VertexTagsInfo& vertices = block.get_vertices();
     vertices.new_vertex();
     for (Value::ConstMemberIterator itr = vertex_tag.MemberBegin(); itr != vertex_tag.MemberEnd(); ++itr) {
@@ -296,7 +290,7 @@ void JSON_Traverser::traverse_vertex_element(const Value& vertex_tag, GraphInfo&
         } else if (!strcmp(itr->name.GetString(), "in")) {
             // printf("Type of member %s is %s\n", itr->name.GetString(), kTypeNames[itr->value.GetType()]);
             logger.log_info_msg("Found first in tag");
-            traverse_vertex_in(itr->value, graph);
+            traverse_vertex_in(itr->value, block, graph);
         } else {
             // assert("Неопознанный тег внутри vertex");
             logger.log_err_msg(func_name, file_name, "Undefined tag inside tag vertex");
@@ -310,7 +304,7 @@ void JSON_Traverser::traverse_vertex_element(const Value& vertex_tag, GraphInfo&
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_vertex(const Value& vertex_tag, GraphInfo& graph) {
+void JSON_Traverser::traverse_vertex(const Value& vertex_tag, BlockTagInfo &block, GraphInfo& graph) {
     const std::string func_name = "traverse_vertex";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -318,10 +312,10 @@ void JSON_Traverser::traverse_vertex(const Value& vertex_tag, GraphInfo& graph) 
 
     if (vertex_tag.IsArray()) {
         for (SizeType i = 0; i < vertex_tag.Size(); i++) {
-            traverse_vertex_element(vertex_tag[i], graph);
+            traverse_vertex_element(vertex_tag[i], block, graph);
         }
     } else if (vertex_tag.IsObject()) {
-        traverse_vertex_element(vertex_tag, graph);
+        traverse_vertex_element(vertex_tag, block, graph);
     } else {
         // assert("Тег vertex имеет неправильный тип");
         logger.log_err_msg(func_name, file_name, "Vertex tag has undefined type");
@@ -335,7 +329,7 @@ void JSON_Traverser::traverse_vertex(const Value& vertex_tag, GraphInfo& graph) 
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_block_element(const Value& block_tag, GraphInfo& graph) {
+void JSON_Traverser::traverse_block_element(const Value& block_tag, BlockTagInfo &parent_block, GraphInfo& graph) {
     const std::string func_name = "traverse_block_element";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -369,13 +363,20 @@ void JSON_Traverser::traverse_block_element(const Value& block_tag, GraphInfo& g
         output_file.fatal_error_report();
         exit(1);
     }
-    BlockTagsInfo& blocks = graph.get_blocks();
-    blocks.new_block();
+    BlockTagInfo block = parent_block;
+    bool has_child = false;
+    // BlockTagsInfo& blocks = graph.get_blocks();
+    // blocks.new_block();
     for (Value::ConstMemberIterator itr = block_tag.MemberBegin(); itr != block_tag.MemberEnd(); ++itr) {
         if (!strcmp(itr->name.GetString(), "@id")) {
             // assert(block_tag["@id"].IsString());
-            logger.log_char_msg("Start handling block with id = ", block_tag["@id"].GetString());
-            blocks.add_id(std::stoi(block_tag["@id"].GetString()));
+            // blocks.add_id(std::stoi(block_tag["@id"].GetString()));
+            if (!parent_block.id.empty()) {
+                block.id += std::string{"::"} + block_tag["@id"].GetString();
+            } else {
+                block.id = block_tag["@id"].GetString();
+            }
+            logger.log_char_msg("Start handling block with id = ", block.id.c_str());
             // printf("Type of member %s is %s\n", itr->name.GetString(), kTypeNames[itr->value.GetType()]);
         } else if (!strcmp(itr->name.GetString(), "@dims")) {
             // assert(block_tag["@dims"].IsString());
@@ -383,16 +384,21 @@ void JSON_Traverser::traverse_block_element(const Value& block_tag, GraphInfo& g
                 exit(1);
             }
             logger.log_char_msg("Current block dim = ", block_tag["@dims"].GetString());
-            blocks.add_dim(std::stoi(block_tag["@dims"].GetString()));
+            block.dim = parent_block.dim + std::stoi(block_tag["@dims"].GetString());
+            // blocks.add_dim(std::stoi(block_tag["@dims"].GetString()));
             // printf("Type of member %s is %s\n", itr->name.GetString(), kTypeNames[itr->value.GetType()]);
         } else if (!strcmp(itr->name.GetString(), "arg")) {
             // printf("Type of member %s is %s\n", itr->name.GetString(), kTypeNames[itr->value.GetType()]);
             logger.log_info_msg("Found first tag arg");
-            traverse_arg(itr->value, graph);
+            traverse_arg(itr->value, block, graph);
         } else if (!strcmp(itr->name.GetString(), "vertex")) {
             // printf("Type of member %s is %s\n", itr->name.GetString(), kTypeNames[itr->value.GetType()]);
             logger.log_info_msg("Found first tag vertex");
-            traverse_vertex(itr->value, graph);
+            traverse_vertex(itr->value, block, graph);
+        } else if (!strcmp(itr->name.GetString(), "block")){
+            has_child = true;
+            logger.log_info_msg("Found first tag block");
+            traverse_block(itr->value, block, graph);
         } else {
             // assert("Неопознанный тег внутри block");
             logger.log_err_msg(func_name, file_name, "Undefined tag inside block tag");
@@ -402,10 +408,15 @@ void JSON_Traverser::traverse_block_element(const Value& block_tag, GraphInfo& g
             exit(1);
         }
     }
+
+    if (!has_child) {
+        graph.add_block(std::move(block));
+    }
+
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_block(const Value& block_tag, GraphInfo& graph) {
+void JSON_Traverser::traverse_block(const Value& block_tag, BlockTagInfo &parent_block, GraphInfo& graph) {
     const std::string func_name = "traverse_block";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -413,10 +424,10 @@ void JSON_Traverser::traverse_block(const Value& block_tag, GraphInfo& graph) {
 
     if (block_tag.IsArray()) {
         for (SizeType i = 0; i < block_tag.Size(); i++) {
-            traverse_block_element(block_tag[i], graph);
+            traverse_block_element(block_tag[i], parent_block, graph);
         }
     } else if (block_tag.IsObject()) {
-        traverse_block_element(block_tag, graph);
+        traverse_block_element(block_tag, parent_block, graph);
     } else {
         logger.log_err_msg(func_name, file_name, "Block tag has undefined type");
         logger.add_user_error("System error");
@@ -563,7 +574,8 @@ void JSON_Traverser::traverse_algo(const Value& algo_tag, GraphInfo& graph) {
         } else if (!strcmp(itr->name.GetString(), "block")) {
             // printf("Type of member %s is %s\n", itr->name.GetString(), kTypeNames[itr->value.GetType()]);
             logger.log_info_msg("Found tag block");
-            traverse_block(itr->value, graph);
+            BlockTagInfo block;
+            traverse_block(itr->value, block, graph);
         } else {
             logger.log_err_msg(func_name, file_name, "Undefined tag inside algo tag");
             logger.add_user_error("Undefined tag inside algo tag");

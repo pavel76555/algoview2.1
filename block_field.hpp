@@ -5,7 +5,7 @@
 namespace graph {
 using namespace graph_info;
 using namespace graph_manager;
-using BlockId = int;
+using BlockId = std::string;
 constexpr int ignore_vertex_id = -2;
 
 class Block {

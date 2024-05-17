@@ -41,6 +41,11 @@ void BlockTagsInfo::new_block() {
     n_++;
 }
 
+void BlockTagsInfo::add_block(BlockTagInfo block) {
+    blocks_.push_back(std::move(block));
+    n_++;
+}
+
 int BlockTagsInfo::is_block_id_unique(BlockId id) {
     for (auto it = blocks_.begin(); it != blocks_.end() - 1; it++) {
         if ((*it).id == id)
@@ -75,7 +80,7 @@ void BlockTagsInfo::add_dim(int dim) {
     logger.log_info_start_msg("adding block dim to internal structure");
 
     if (!(dim > 0 && dim < 4)) {
-        std::string msg = "Invalid dimension of block " + std::to_string(blocks_[n_].id);
+        std::string msg = "Invalid dimension of block " + blocks_[n_].id;
         logger.log_err_msg(func_name, file_name, msg);
         logger.add_user_error(msg);
         auto& output_file = OutputFileManager::get_instance();

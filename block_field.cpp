@@ -329,7 +329,7 @@ void Block::main_cycle(const BlockTagInfo& block_info,
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
     logger.log_info_start_msg("converting block to part of graph");
-    logger.log_info_msg("BLOCK " + std::to_string(block_info.id));
+    logger.log_info_msg("BLOCK " + block_info.id);
 
     const auto& args = block_info.get_args();
     const auto& arg = args.get_args();
@@ -382,7 +382,7 @@ void Block::main_cycle(const BlockTagInfo& block_info,
                             BlockId bsrc_block_id = bsrc.first;
                             auto it = block_map.find(bsrc_block_id);
                             if (it == block_map.end()) {
-                                msg = "Source block id = " + std::to_string(bsrc_block_id) + " is not defined yet";
+                                msg = "Source block id = " + bsrc_block_id + " is not defined yet";
                                 logger.log_err_msg(func_name, file_name, msg);
                                 logger.add_user_error(msg);
                                 auto& output_file = OutputFileManager::get_instance();
