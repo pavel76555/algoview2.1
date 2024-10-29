@@ -29,4 +29,4 @@ ParamsMap& GraphInfo::get_params() {
 BlockTagsInfo& GraphInfo::get_blocks() {
     return blocks_;
 }
-}  // namespace graph_info
+} // namespace graph_info

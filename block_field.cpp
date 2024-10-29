@@ -54,7 +54,7 @@ VertexId Block::get_vertex_id(CoordType i, CoordType j, CoordType k) {
     if (i + i_shift_ < 0 || j + j_shift_ < 0 || k + k_shift_ < 0 || i + i_shift_ >= coords_field_.size() ||
         j + j_shift_ >= coords_field_[0].size() || k + k_shift_ >= coords_field_[0][0].size()) {
         std::string msg = "Vertex with current coords = [" + std::to_string(i) + ", " + std::to_string(j) + ", " +
-                          std::to_string(k) + "] will be ignored, since it is out of range of arguments";
+                            std::to_string(k) + "] will be ignored, since it is out of range of arguments";
         logger.log_warn_msg(func_name, file_name, msg);
         logger.add_user_warning(msg);
         return ignore_vertex_id;
@@ -67,12 +67,12 @@ VertexId Block::get_vertex_id(CoordType i, CoordType j, CoordType k) {
 }
 
 VertexId Block::get_or_create_current_vertex(VertexMapManager& vertices_manager,
-                                             GraphCharactManager& graph_character_manager,
-                                             BlockId block_id,
-                                             CoordType i,
-                                             CoordType j,
-                                             CoordType k,
-                                             std::string type) {
+                                                GraphCharactManager& graph_character_manager,
+                                                BlockId block_id,
+                                                CoordType i,
+                                                CoordType j,
+                                                CoordType k,
+                                                std::string type) {
     const std::string func_name = "get_or_create_current_vertex";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -88,8 +88,8 @@ VertexId Block::get_or_create_current_vertex(VertexMapManager& vertices_manager,
         // if current vertex already exists, previous one that is i/o vertex should be relocated
         // for this reason, we mark previuos vertex as extra
         msg = "Vertex with physical coords [" + std::to_string(i + i_shift_) + ", " + std::to_string(j + j_shift_) +
-              ", " + std::to_string(k + k_shift_) +
-              "] have been created earlier. Create a new i/o vertex with a shift.";
+                ", " + std::to_string(k + k_shift_) +
+                "] have been created earlier. Create a new i/o vertex with a shift.";
         logger.log_warn_msg(func_name, file_name, msg);
         logger.add_user_warning(msg);
         vertices_manager.add_info(vertex_id, "extra");
@@ -101,12 +101,12 @@ VertexId Block::get_or_create_current_vertex(VertexMapManager& vertices_manager,
 }
 
 VertexId Block::create_vertex(VertexMapManager& vertices_manager,
-                              GraphCharactManager& graph_charact_manager,
-                              BlockId block_id,
-                              CoordType i,
-                              CoordType j,
-                              CoordType k,
-                              std::string type = "0") {
+                                GraphCharactManager& graph_charact_manager,
+                                BlockId block_id,
+                                CoordType i,
+                                CoordType j,
+                                CoordType k,
+                                std::string type = "0") {
     const std::string func_name = "create_vertex";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -152,7 +152,7 @@ VertexId Block::get_or_create_source_vertex(VertexMapManager& vertices_manager,
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
     std::string msg = "Get or create source vertex with coords : " + std::to_string(i) + " " + std::to_string(j) + " " +
-                      std::to_string(k);
+                        std::to_string(k);
     logger.log_info_msg(msg);
     VertexId vertex_id = get_vertex_id(i, j, k);
     if (vertex_id == ignore_vertex_id) {
@@ -163,8 +163,8 @@ VertexId Block::get_or_create_source_vertex(VertexMapManager& vertices_manager,
         return vertex_id;
     }
     msg = "Source vertex with physical coords [" + std::to_string(i + i_shift_) + ", " + std::to_string(j + j_shift_) +
-          ", " + std::to_string(k + k_shift_) +
-          "] will be created as i/o vertex, since vertex with current coords does not exist";
+            ", " + std::to_string(k + k_shift_) +
+            "] will be created as i/o vertex, since vertex with current coords does not exist";
     logger.log_warn_msg(func_name, file_name, msg);
     logger.add_user_warning(msg);
     vertex_id = create_vertex(vertices_manager, graph_charact_manager, block_id, i, j, k, "0");
@@ -227,11 +227,11 @@ void change_var_value_map(std::string var_name, int var_value, VarsMap& vars_map
 }
 
 void get_src_vertex_coords(const std::string& src_string,
-                           int dim,
-                           CoordType& i,
-                           CoordType& j,
-                           CoordType& k,
-                           const VarsMap& vars_map) {
+                            int dim,
+                            CoordType& i,
+                            CoordType& j,
+                            CoordType& k,
+                            const VarsMap& vars_map) {
     const std::string func_name = "get_src_vertex_coords";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -277,7 +277,7 @@ void get_src_vertex_coords(const std::string& src_string,
     }
 
     msg = "i src coord = " + std::to_string(i) + "\tj src coord = " + std::to_string(j) +
-          "\tk src coord = " + std::to_string(k);
+            "\tk src coord = " + std::to_string(k);
     logger.log_info_msg(msg);
     logger.log_info_finish_msg("getting scr vertex coords values");
     logger.log_file_exit(func_name, file_name);
@@ -300,9 +300,9 @@ void array_to_str(const std::vector<VertexId> array, std::string& str) {
 }
 
 void change_levels_rec(const EdgeMapManager& edges_manager,
-                       VertexMapManager& vertices_manager,
-                       VertexId vertex_id,
-                       int level) {
+                        VertexMapManager& vertices_manager,
+                        VertexId vertex_id,
+                        int level) {
     auto& logger = Logger::get_instance();
     std::vector<VertexId> target_vertex_ids;
     edges_manager.get_target_vertex_ids(target_vertex_ids, vertex_id);
@@ -320,11 +320,11 @@ void change_levels_rec(const EdgeMapManager& edges_manager,
 }
 
 void Block::main_cycle(const BlockTagInfo& block_info,
-                       const ParamsMap& params,
-                       VertexMapManager& vertices_manager,
-                       EdgeMapManager& edges_manager,
-                       GraphCharactManager& graph_charact_manager,
-                       std::map<BlockId, Block*>& block_map) {
+                        const ParamsMap& params,
+                        VertexMapManager& vertices_manager,
+                        EdgeMapManager& edges_manager,
+                        GraphCharactManager& graph_charact_manager,
+                        std::map<BlockId, Block*>& block_map) {
     const std::string func_name = "create_var_value_map";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -343,7 +343,7 @@ void Block::main_cycle(const BlockTagInfo& block_info,
             for (int k = arg[2].begin; k <= arg[2].end; k++) {
                 logger.log_info_msg("Got current arg values");
                 std::string msg = arg[0].name + " = " + std::to_string(i) + "\t" + arg[1].name + " = " +
-                                  std::to_string(j) + "\t" + arg[2].name + " = " + std::to_string(k) + "\t";
+                                    std::to_string(j) + "\t" + arg[2].name + " = " + std::to_string(k) + "\t";
                 logger.log_info_msg(msg);
                 logger.log_info_start_msg("iterating verticies");
                 for (const auto& vertex : vertices.get_vertices()) {
@@ -362,7 +362,7 @@ void Block::main_cycle(const BlockTagInfo& block_info,
                     if (cond) {
                         // int cur_vertex_not_new_flag = 0;
                         VertexId vertex_id = get_or_create_current_vertex(vertices_manager, graph_charact_manager,
-                                                                          block_id, i, j, k, vertex.type);
+                                                                            block_id, i, j, k, vertex.type);
                         std::vector<int> src_vertices_levels;
                         logger.log_info_start_msg("iterating src");
                         for (const auto& src : vertex.src) {
@@ -441,4 +441,4 @@ void Block::main_cycle(const BlockTagInfo& block_info,
     logger.log_file_exit(func_name, file_name);
 }
 
-}  // namespace graph
+} // namespace graph

@@ -71,4 +71,4 @@ void ArgTagsInfo::print_arg_tags() const {
         std::cout << std::endl;
     }
 }
-}  // namespace graph_info
+} // namespace graph_info

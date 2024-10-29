@@ -24,7 +24,7 @@ void VertexTagsInfo::add_src(std::string src) {
     vertex_tags_[n_].src.push_back(src);
 }
 
-void VertexTagsInfo::add_bsrc(const std::pair<std::string, std::string> &bsrc) {
+void VertexTagsInfo::add_bsrc(const std::pair<std::string, std::string>& bsrc) {
     vertex_tags_[n_].bsrc.push_back(bsrc);
 }
 
@@ -45,4 +45,4 @@ void VertexTagsInfo::print_vertex_tags() const {
         std::cout << std::endl;
     }
 }
-}  // namespace graph_info
+} // namespace graph_info

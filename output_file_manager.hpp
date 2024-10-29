@@ -4,19 +4,25 @@
 namespace output_file_manager {
 
 class OutputFileManager {
-   public:
+public:
     static OutputFileManager& get_instance() {
         static OutputFileManager instance;
         return instance;
     }
 
-    void open(const std::string& file_name) { output_file_.open(file_name); };
-    void write(std::string string) { output_file_ << string; };
+    void open(const std::string& file_name) {
+        output_file_.open(file_name);
+    };
+    void write(std::string string) {
+        output_file_ << string;
+    };
     void fatal_error_report();
 
-   private:
+private:
     OutputFileManager(){};
-    ~OutputFileManager() { output_file_.close(); };
+    ~OutputFileManager() {
+        output_file_.close();
+    };
     std::ofstream output_file_;
     std::string empty_graph_charact_str_ =
         "\n\t\"characteristics\":\n\t\t{ \"vertex_num\": 0, \"edge_num\": 0, \"critical_length\": 0, \"width\": "
@@ -25,4 +31,4 @@ class OutputFileManager {
     std::string empty_edges_str_ = "\t\"edges\": [],\n";
 };
 
-}  // namespace output_file_manager
+} // namespace output_file_manager

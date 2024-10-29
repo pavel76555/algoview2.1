@@ -5,27 +5,28 @@
 #include "vertex.hpp"
 
 namespace graph_info {
+
 using BlockId = std::string;
 class BlockTagInfo {
-   public:
+public:
     BlockId id;
     int dim = 0;
     BlockTagInfo() = default;
     BlockTagInfo(const BlockTagInfo&) = default;
-    BlockTagInfo(BlockTagInfo&&) = default; 
+    BlockTagInfo(BlockTagInfo&&) = default;
     void print_block_tag() const;
     VertexTagsInfo& get_vertices();
     ArgTagsInfo& get_args();
     const ArgTagsInfo& get_args() const;
     const VertexTagsInfo& get_vertices() const;
 
-   private:
+private:
     ArgTagsInfo args_;
     VertexTagsInfo vertices_;
 };
 
 class BlockTagsInfo {
-   public:
+public:
     void new_block();
     int is_block_id_unique(BlockId id);
     void add_id(BlockId id);
@@ -35,8 +36,8 @@ class BlockTagsInfo {
     BlockTagInfo& get_last_block();
     const std::vector<BlockTagInfo>& get_blocks();
 
-   private:
+private:
     int n_ = -1;
     std::vector<BlockTagInfo> blocks_;
 };
-}  // namespace graph_info
+} // namespace graph_info

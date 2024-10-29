@@ -33,7 +33,7 @@ using VertexMap = std::map<VertexId, Vertex*>;
 using EdgeMap = std::map<EdgeId, const Edge*>;
 
 class VertexMapManager {
-   public:
+public:
     VertexId add_vertex(Vertex* vertex);
     void add_vertex_level(VertexId vertex_id, int level);
     int get_vertex_level(VertexId vertex_id);
@@ -42,37 +42,45 @@ class VertexMapManager {
     std::string to_json();
     void clean_map();
 
-   private:
+private:
     VertexId vertex_id_counter_ = 0;
-    VertexId get_new_vertex_id() { return vertex_id_counter_++; }
+    VertexId get_new_vertex_id() {
+        return vertex_id_counter_++;
+    }
     VertexMap vertices_;
 };
 
 class EdgeMapManager {
-   public:
+public:
     void add_edge(const Edge* edge);
     void get_target_vertex_ids(std::vector<VertexId>& target_vertex_ids, VertexId vertex_id) const;
     std::string to_json();
     void clean_map();
 
-   private:
+private:
     VertexId edge_id_counter_ = 0;
-    VertexId get_new_edge_id() { return edge_id_counter_++; }
+    VertexId get_new_edge_id() {
+        return edge_id_counter_++;
+    }
     EdgeMap edges_;
 };
 
 class GraphCharactManager {
-   public:
-    void inc_vertices_counter() { graph_charact_.vertex_num++; };
-    void inc_edges_counter() { graph_charact_.edge_num++; };
+public:
+    void inc_vertices_counter() {
+        graph_charact_.vertex_num++;
+    };
+    void inc_edges_counter() {
+        graph_charact_.edge_num++;
+    };
     void add_critical_lenght(int lenght);
     void inc_level_vertex_counter(int level);
     void calculate_width();
     std::string to_json();
 
-   private:
+private:
     GraphCharact graph_charact_;
 };
 
 void print_json(VertexMapManager& vertices_manager, EdgeMapManager& edges_manager);
-}  // namespace graph_manager
+} // namespace graph_manager

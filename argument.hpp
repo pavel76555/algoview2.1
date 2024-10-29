@@ -10,7 +10,7 @@ struct ArgTagInfo {
 };
 
 class ArgTagsInfo {
-   public:
+public:
     ArgTagsInfo();
 
     void add_arg(std::string name, int begin_value, int end_value);
@@ -18,8 +18,8 @@ class ArgTagsInfo {
     void print_arg_tags() const;
     const std::vector<ArgTagInfo>& get_args() const;
 
-   private:
+private:
     int n_ = 0;
     std::vector<ArgTagInfo> arg_tags_;
 };
-}  // namespace graph_info
+} // namespace graph_info

@@ -92,7 +92,7 @@ void parse_value(const std::string& str, std::string& left_value, std::string& r
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_arg_element(const Value& arg_tag, BlockTagInfo &block, GraphInfo& graph) {
+void JSON_Traverser::traverse_arg_element(const Value& arg_tag, BlockTagInfo& block, GraphInfo& graph) {
     const std::string func_name = "traverse_arg_element";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -155,7 +155,7 @@ void JSON_Traverser::traverse_arg_element(const Value& arg_tag, BlockTagInfo &bl
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_arg(const Value& arg_tag, BlockTagInfo &block, GraphInfo& graph) {
+void JSON_Traverser::traverse_arg(const Value& arg_tag, BlockTagInfo& block, GraphInfo& graph) {
     const std::string func_name = "traverse_arg";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -179,7 +179,7 @@ void JSON_Traverser::traverse_arg(const Value& arg_tag, BlockTagInfo &block, Gra
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_vertex_in_element(const Value& in_tag, BlockTagInfo &block, GraphInfo& graph) {
+void JSON_Traverser::traverse_vertex_in_element(const Value& in_tag, BlockTagInfo& block, GraphInfo& graph) {
     const std::string func_name = "traverse_vertex_in_element";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -226,7 +226,7 @@ void JSON_Traverser::traverse_vertex_in_element(const Value& in_tag, BlockTagInf
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_vertex_in(const Value& in_tag, BlockTagInfo &block, GraphInfo& graph) {
+void JSON_Traverser::traverse_vertex_in(const Value& in_tag, BlockTagInfo& block, GraphInfo& graph) {
     const std::string func_name = "traverse_vertex_in";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -250,7 +250,7 @@ void JSON_Traverser::traverse_vertex_in(const Value& in_tag, BlockTagInfo &block
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_vertex_element(const Value& vertex_tag, BlockTagInfo &block, GraphInfo& graph) {
+void JSON_Traverser::traverse_vertex_element(const Value& vertex_tag, BlockTagInfo& block, GraphInfo& graph) {
     const std::string func_name = "traverse_vertex_element";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -304,7 +304,7 @@ void JSON_Traverser::traverse_vertex_element(const Value& vertex_tag, BlockTagIn
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_vertex(const Value& vertex_tag, BlockTagInfo &block, GraphInfo& graph) {
+void JSON_Traverser::traverse_vertex(const Value& vertex_tag, BlockTagInfo& block, GraphInfo& graph) {
     const std::string func_name = "traverse_vertex";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -329,7 +329,7 @@ void JSON_Traverser::traverse_vertex(const Value& vertex_tag, BlockTagInfo &bloc
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_block_element(const Value& block_tag, BlockTagInfo &parent_block, GraphInfo& graph) {
+void JSON_Traverser::traverse_block_element(const Value& block_tag, BlockTagInfo& parent_block, GraphInfo& graph) {
     const std::string func_name = "traverse_block_element";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -395,7 +395,7 @@ void JSON_Traverser::traverse_block_element(const Value& block_tag, BlockTagInfo
             // printf("Type of member %s is %s\n", itr->name.GetString(), kTypeNames[itr->value.GetType()]);
             logger.log_info_msg("Found first tag vertex");
             traverse_vertex(itr->value, block, graph);
-        } else if (!strcmp(itr->name.GetString(), "block")){
+        } else if (!strcmp(itr->name.GetString(), "block")) {
             has_child = true;
             logger.log_info_msg("Found first tag block");
             traverse_block(itr->value, block, graph);
@@ -416,7 +416,7 @@ void JSON_Traverser::traverse_block_element(const Value& block_tag, BlockTagInfo
     logger.log_file_exit(func_name, file_name);
 }
 
-void JSON_Traverser::traverse_block(const Value& block_tag, BlockTagInfo &parent_block, GraphInfo& graph) {
+void JSON_Traverser::traverse_block(const Value& block_tag, BlockTagInfo& parent_block, GraphInfo& graph) {
     const std::string func_name = "traverse_block";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -611,4 +611,4 @@ void JSON_Traverser::traverse(const Document& doc, GraphInfo& graph) {
     logger.log_file_exit(func_name, file_name);
 }
 
-}  // namespace algoview_json_traverser
+} // namespace algoview_json_traverser

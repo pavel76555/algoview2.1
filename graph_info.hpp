@@ -9,7 +9,7 @@ namespace graph_info {
 using ParamsMap = std::map<std::string, double>;
 
 class GraphInfo {
-   public:
+public:
     void add_param(std::string name, int value);
     void add_block(BlockTagInfo block);
     void print_params() const;
@@ -17,8 +17,8 @@ class GraphInfo {
     ParamsMap& get_params();
     BlockTagsInfo& get_blocks();
 
-   private:
+private:
     ParamsMap params_;
     BlockTagsInfo blocks_;
 };
-}  // namespace graph_info
+} // namespace graph_info

@@ -103,9 +103,9 @@ std::string EdgeMapManager::to_json() {
     result_string += "\t\"edges\": [";
     for (const auto& edge : edges_) {
         std::string edge_string = "\n\t\t{ \"id\": " + std::to_string(edge.first) +
-                                  ", \"sourceVertexId\": " + std::to_string(edge.second->source_vertex_id) +
-                                  ", \"targetVertexId\": " + std::to_string(edge.second->target_vertex_id) +
-                                  ", \"type\": \"" + edge.second->type + "\" },";
+                                    ", \"sourceVertexId\": " + std::to_string(edge.second->source_vertex_id) +
+                                    ", \"targetVertexId\": " + std::to_string(edge.second->target_vertex_id) +
+                                    ", \"type\": \"" + edge.second->type + "\" },";
         result_string += edge_string;
     }
     if (result_string.back() != '[')
@@ -133,4 +133,4 @@ void EdgeMapManager::clean_map() {
         delete edge.second;
     }
 }
-}  // namespace graph_manager
+} // namespace graph_manager

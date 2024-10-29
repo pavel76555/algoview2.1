@@ -7,7 +7,7 @@ namespace algoview_xml_parser {
 using namespace rapidjson;
 
 class XML_Parser {
-   public:
+public:
     void open_file(const std::string& file_name);
     void xml_to_json();
     void print_json();
@@ -15,9 +15,9 @@ class XML_Parser {
     void parse(const std::string& file_name);
     const Document& get_DOM_tree();
 
-   private:
+private:
     std::ifstream file_;
     std::string json_str_;
     Document DOM_tree_;
 };
-}  // namespace algoview_xml_parser
+} // namespace algoview_xml_parser

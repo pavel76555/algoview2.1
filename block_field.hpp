@@ -9,7 +9,7 @@ using BlockId = std::string;
 constexpr int ignore_vertex_id = -2;
 
 class Block {
-   public:
+public:
     int dim = 0;
     int i_range = 0;
     int j_range = 0;
@@ -18,25 +18,25 @@ class Block {
     Block(const BlockTagInfo& _block_info, int block_number);
     VertexId get_vertex_id(CoordType i, CoordType j, CoordType k);
     VertexId get_or_create_source_vertex(VertexMapManager&,
-                                         GraphCharactManager&,
-                                         BlockId block_id,
-                                         CoordType i,
-                                         CoordType j,
-                                         CoordType k);
+                                            GraphCharactManager&,
+                                            BlockId block_id,
+                                            CoordType i,
+                                            CoordType j,
+                                            CoordType k);
     VertexId get_or_create_current_vertex(VertexMapManager&,
-                                          GraphCharactManager&,
-                                          BlockId,
-                                          CoordType i,
-                                          CoordType j,
-                                          CoordType k,
-                                          std::string type);
+                                            GraphCharactManager&,
+                                            BlockId,
+                                            CoordType i,
+                                            CoordType j,
+                                            CoordType k,
+                                            std::string type);
     VertexId create_vertex(VertexMapManager&,
-                           GraphCharactManager&,
-                           BlockId,
-                           CoordType i,
-                           CoordType j,
-                           CoordType k,
-                           std::string type);
+                            GraphCharactManager&,
+                            BlockId,
+                            CoordType i,
+                            CoordType j,
+                            CoordType k,
+                            std::string type);
     void create_edge(VertexId src_id, VertexId target_id, EdgeMapManager&, GraphCharactManager&, VertexMapManager&);
     void main_cycle(const BlockTagInfo&,
                     const ParamsMap&,
@@ -45,7 +45,7 @@ class Block {
                     GraphCharactManager&,
                     std::map<BlockId, Block*>&);
 
-   private:
+private:
     int i_shift_ = 0;
     int j_shift_ = 0;
     int k_shift_ = 0;
@@ -53,4 +53,4 @@ class Block {
     std::vector<std::vector<std::vector<CoordType>>> coords_field_;
 };
 
-}  // namespace graph
+} // namespace graph

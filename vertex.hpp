@@ -13,18 +13,18 @@ struct VertexTagInfo {
 };
 
 class VertexTagsInfo {
-   public:
+public:
     void new_vertex();
     void add_condition(std::string cond);
     void add_type(std::string type);
     void add_src(std::string src);
-    void add_bsrc(const std::pair<std::string, std::string> &bsrc);
+    void add_bsrc(const std::pair<std::string, std::string>& bsrc);
     const std::vector<VertexTagInfo>& get_vertices() const;
 
     void print_vertex_tags() const;
 
-   private:
+private:
     int n_ = -1;
     std::vector<VertexTagInfo> vertex_tags_;
 };
-}  // namespace graph_info
+} // namespace graph_info
