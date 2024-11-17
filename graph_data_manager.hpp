@@ -4,16 +4,36 @@
 #include <vector>
 
 namespace graph_manager {
+using BlockId = std::string;
 using VertexId = int;
 using EdgeId = int;
 using CoordType = int;
 
 struct Vertex {
     std::string block_id;
-    int i, j, k;
+    CoordType i, j, k;
+    CoordType x, y, z;
     int level = 0;
     std::string type = "0";
     std::string info = "normal";
+};
+
+constexpr VertexId invalidVertexId = -1;
+
+struct Coords {
+    CoordType i, j, k;
+
+    bool operator<(const Coords &other) const {
+        if (i != other.i) {
+            return i < other.i;
+        }
+
+        if (j != other.j) {
+            return j < other.j;
+        }
+
+        return k < other.k;
+    }
 };
 
 struct Edge {
@@ -29,55 +49,46 @@ struct GraphCharact {
     int edge_num = 0;
 };
 
-using VertexMap = std::map<VertexId, Vertex*>;
-using EdgeMap = std::map<EdgeId, const Edge*>;
+using ReverseVertexMap = std::map<BlockId, std::map<Coords, VertexId>>;
+using VertexMap = std::map<VertexId, Vertex>;
+using EdgeMap = std::map<EdgeId, Edge>;
 
 class VertexMapManager {
 public:
-    VertexId add_vertex(Vertex* vertex);
-    void add_vertex_level(VertexId vertex_id, int level);
-    int get_vertex_level(VertexId vertex_id);
-    std::string& get_vertex_type(VertexId vertex_id);
-    void add_info(VertexId vertex_id, const std::string& info);
-    std::string to_json();
-    void clean_map();
+    VertexId add_vertex(const BlockId &blockId,
+                        const CoordType& i, const CoordType& j, const CoordType& k,
+                        const CoordType& x, const CoordType& y, const CoordType& z,
+                        const std::string& type);
+    Vertex& get_vertex(const VertexId& vertexId);
+    const VertexId& get_vertex_id(const BlockId &blockId, const CoordType& i, const CoordType& j, const CoordType& k);
 
+    std::string to_json();
 private:
     VertexId vertex_id_counter_ = 0;
-    VertexId get_new_vertex_id() {
-        return vertex_id_counter_++;
-    }
+    VertexId get_new_vertex_id() { return vertex_id_counter_++; }
     VertexMap vertices_;
+    ReverseVertexMap reverseVerticesMap_;
 };
 
 class EdgeMapManager {
 public:
-    void add_edge(const Edge* edge);
-    void get_target_vertex_ids(std::vector<VertexId>& target_vertex_ids, VertexId vertex_id) const;
+    void add_edge(const VertexId& src, const VertexId &dst, const std::string& type = "0");
+    std::vector<VertexId> get_target_vertex_ids(const VertexId &vertex_id) const;
     std::string to_json();
-    void clean_map();
-
 private:
     VertexId edge_id_counter_ = 0;
-    VertexId get_new_edge_id() {
-        return edge_id_counter_++;
-    }
+    VertexId get_new_edge_id() { return edge_id_counter_++; }
     EdgeMap edges_;
 };
 
 class GraphCharactManager {
 public:
-    void inc_vertices_counter() {
-        graph_charact_.vertex_num++;
-    };
-    void inc_edges_counter() {
-        graph_charact_.edge_num++;
-    };
+    void inc_vertices_counter() { graph_charact_.vertex_num++; };
+    void inc_edges_counter() { graph_charact_.edge_num++; };
     void add_critical_lenght(int lenght);
     void inc_level_vertex_counter(int level);
     void calculate_width();
     std::string to_json();
-
 private:
     GraphCharact graph_charact_;
 };

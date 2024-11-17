@@ -25,7 +25,7 @@ private:
     };
     std::ofstream output_file_;
     std::string empty_graph_charact_str_ =
-        "\n\t\"characteristics\":\n\t\t{ \"vertex_num\": 0, \"edge_num\": 0, \"critical_length\": 0, \"width\": "
+        "\n\t\"characteristics\":\n\t\t{\"vertex_num\": 0, \"edge_num\": 0, \"critical_length\": 0, \"width\": "
         "0},\n";
     std::string empty_vertices_str_ = "\t\"vertices\": [],\n";
     std::string empty_edges_str_ = "\t\"edges\": [],\n";

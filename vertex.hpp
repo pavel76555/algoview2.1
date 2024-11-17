@@ -18,7 +18,7 @@ public:
     void add_condition(std::string cond);
     void add_type(std::string type);
     void add_src(std::string src);
-    void add_bsrc(const std::pair<std::string, std::string>& bsrc);
+    void add_bsrc(const std::string& bsrc, const std::string& src);
     const std::vector<VertexTagInfo>& get_vertices() const;
 
     void print_vertex_tags() const;

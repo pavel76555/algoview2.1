@@ -11,14 +11,13 @@ using ParamsMap = std::map<std::string, double>;
 class GraphInfo {
 public:
     void add_param(std::string name, int value);
-    void add_block(BlockTagInfo block);
     void print_params() const;
     void print_graph() const;
+    void rebuild_external_blocks();
     ParamsMap& get_params();
-    BlockTagsInfo& get_blocks();
-
+    BlockTree& get_BlockTree() { return blocks_; }
 private:
     ParamsMap params_;
-    BlockTagsInfo blocks_;
+    BlockTree blocks_;
 };
 } // namespace graph_info

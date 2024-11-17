@@ -3,108 +3,118 @@
 #include "iostream"
 #include "output_file_manager.hpp"
 
-const std::string file_name = "block.cpp";
-
 namespace graph_info {
 using namespace logger;
 using namespace output_file_manager;
 
-ArgTagsInfo& BlockTagInfo::get_args() {
-    return args_;
-}
+BlockTree::BlockTree(BlockId id_, int dim_, ArgTagsInfo args)
+    : id(id_)
+    , dim(dim_)
+    , args_(args)
+    {}
 
-const ArgTagsInfo& BlockTagInfo::get_args() const {
-    return args_;
-}
-
-VertexTagsInfo& BlockTagInfo::get_vertices() {
-    return vertices_;
-}
-
-const VertexTagsInfo& BlockTagInfo::get_vertices() const {
-    return vertices_;
-}
-
-void BlockTagInfo::print_block_tag() const {
-    std::cout << std::endl
-                << "\t\t\tBLOCK TAG" << std::endl;
-    std::cout << "id = " << id << std::endl;
-    std::cout << "dim = " << dim << std::endl
-                << std::endl;
-    std::cout << "\t\t\tARG TAGS" << std::endl;
-    args_.print_arg_tags();
-    std::cout << "\t\t\tVERTEX TAGS" << std::endl;
-    vertices_.print_vertex_tags();
-}
-
-void BlockTagsInfo::new_block() {
-    blocks_.emplace_back(BlockTagInfo());
-    n_++;
-}
-
-void BlockTagsInfo::add_block(BlockTagInfo block) {
-    blocks_.push_back(std::move(block));
-    n_++;
-}
-
-int BlockTagsInfo::is_block_id_unique(BlockId id) {
-    for (auto it = blocks_.begin(); it != blocks_.end() - 1; it++) {
-        if ((*it).id == id)
-            return 0;
-    }
-    return 1;
-}
-
-void BlockTagsInfo::add_id(BlockId id) {
-    const std::string func_name = "add_id";
+void BlockTree::new_child() {
     auto& logger = Logger::get_instance();
-    logger.log_file_enter(func_name, file_name);
-    logger.log_info_start_msg("adding block id to internal structure");
+    logger.log_file_enter(__func__, __FILE__);
+    logger.log_info_start_msg("adding child to block");
 
-    if (!is_block_id_unique(id)) {
-        logger.log_err_msg(func_name, file_name, "Block id is used twice");
+    if (has_child_with_id(id)) {
+        logger.log_err_msg(__func__, __FILE__, "Block id is used twice");
         logger.add_user_error("Block id is used twice");
         auto& output_file = OutputFileManager::get_instance();
         output_file.fatal_error_report();
         exit(1);
     }
-    blocks_[n_].id = id;
 
-    logger.log_info_finish_msg("adding block id to internal structure");
-    logger.log_file_exit(func_name, file_name);
+    children_.emplace_back(id, dim, args_);
+    childrenIds_.insert(id);
+
+    logger.log_info_finish_msg("adding child to block ");
+    logger.log_file_exit(__func__, __FILE__);
 }
 
-void BlockTagsInfo::add_dim(int dim) {
-    const std::string func_name = "add_dim";
+void BlockTree::set_child_id(BlockId id_) {
     auto& logger = Logger::get_instance();
-    logger.log_file_enter(func_name, file_name);
+    logger.log_file_enter(__func__, __FILE__);
+    logger.log_info_start_msg("add id to last child");
+
+    childrenIds_.erase(id);
+
+    auto new_id = id + "::" + id_;
+    if (id.empty()) {
+        new_id = id_;
+    }
+
+    if (has_child_with_id(new_id)) {
+        logger.log_err_msg(__func__, __FILE__, "Block id is used twice");
+        logger.add_user_error("Block id is used twice");
+        auto& output_file = OutputFileManager::get_instance();
+        output_file.fatal_error_report();
+        exit(1);
+    }
+
+    childrenIds_.insert(new_id);
+    children_.back().id = new_id;
+
+    logger.log_info_finish_msg("add id to last child");
+    logger.log_file_exit(__func__, __FILE__);
+}
+
+void BlockTree::set_child_dim(int dim_) {
+    auto& logger = Logger::get_instance();
+    logger.log_file_enter(__func__, __FILE__);
     logger.log_info_start_msg("adding block dim to internal structure");
 
-    if (!(dim > 0 && dim < 4)) {
-        std::string msg = "Invalid dimension of block " + blocks_[n_].id;
-        logger.log_err_msg(func_name, file_name, msg);
+    auto new_dim = dim + dim_;
+    if (!(new_dim >= 1 && new_dim <= 3)) {
+        std::string msg = "Invalid dimension of block";
+        logger.log_err_msg(__func__, __FILE__, msg);
         logger.add_user_error(msg);
         auto& output_file = OutputFileManager::get_instance();
         output_file.fatal_error_report();
         exit(1);
     }
-    blocks_[n_].dim = dim;
+    children_.back().dim = new_dim;
 
     logger.log_info_finish_msg("adding block dim to internal structure");
-    logger.log_file_exit(func_name, file_name);
+    logger.log_file_exit(__func__, __FILE__);
 }
 
-void BlockTagsInfo::print_block_tags() const {
-    for (const auto& block : blocks_) {
-        block.print_block_tag();
+void BlockTree::print_leaves() const {
+    if (children_.empty()) {
+        std::cout << std::endl << "\t\t\tBLOCK TAG" << std::endl;
+        std::cout << "id = " << id << std::endl;
+        std::cout << "dim = " << dim << std::endl << std::endl;
+        std::cout << "\t\t\tARG TAGS" << std::endl;
+        args_.print_arg_tags();
+        std::cout << "\t\t\tVERTEX TAGS" << std::endl;
+        vertices_.print_vertex_tags();
+    }
+
+    for (const auto &child : children_) {
+        child.print_leaves();
     }
 }
 
-BlockTagInfo& BlockTagsInfo::get_last_block() {
-    return blocks_[n_];
+void BlockTree::rebuild_external_blocks() {
+    for (auto &child: children_) {
+        std::vector<BlockTree> leaves;
+        child.collect_leaves(leaves);
+
+        child.children_ = leaves;
+        child.childrenIds_.clear();
+    }
 }
 
-const std::vector<BlockTagInfo>& BlockTagsInfo::get_blocks() {
-    return blocks_;
+void BlockTree::collect_leaves(std::vector<BlockTree> &res) {
+    if (children_.empty()) {
+        res.push_back(std::move(*this));
+        return;
+    }
+
+    for (auto &child : children_) {
+        child.collect_leaves(res);
+    }
 }
+
 } // namespace graph_info

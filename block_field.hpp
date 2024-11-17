@@ -8,6 +8,7 @@ using namespace graph_manager;
 using BlockId = std::string;
 constexpr int ignore_vertex_id = -2;
 
+/*
 class Block {
 public:
     int dim = 0;
@@ -51,6 +52,14 @@ private:
     int k_shift_ = 0;
     int local_block_shift_ = 2;
     std::vector<std::vector<std::vector<CoordType>>> coords_field_;
+};
+*/
+
+class ExternalBlock {
+public:
+    void main_cycle(BlockTree& blocks, const ParamsMap& params,
+                               VertexMapManager& vertexes, EdgeMapManager& edges, GraphCharactManager& graphCharact);
+private:
 };
 
 } // namespace graph

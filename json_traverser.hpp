@@ -12,14 +12,14 @@ static const char* kTypeNames[] = {"Null", "False", "True", "Object", "Array", "
 
 class JSON_Traverser {
 public:
-    static void traverse_arg_element(const Value& vertex_tag, BlockTagInfo& block, GraphInfo& graph);
-    static void traverse_arg(const Value& vertex_tag, BlockTagInfo& block, GraphInfo& graph);
-    static void traverse_vertex_in_element(const Value& vertex_tag, BlockTagInfo& block, GraphInfo& graph);
-    static void traverse_vertex_in(const Value& vertex_tag, BlockTagInfo& block, GraphInfo& graph);
-    static void traverse_vertex_element(const Value& vertex_tag, BlockTagInfo& block, GraphInfo& graph);
-    static void traverse_vertex(const Value& vertex_tag, BlockTagInfo& block, GraphInfo& graph);
-    static void traverse_block_element(const Value& block_tag, BlockTagInfo& parent_block, GraphInfo& graph);
-    static void traverse_block(const Value& block_tag, BlockTagInfo& parent_block, GraphInfo& graph);
+    static void traverse_arg_element(const Value& vertex_tag, BlockTree& block, GraphInfo& graph);
+    static void traverse_arg(const Value& vertex_tag, BlockTree& block, GraphInfo& graph);
+    static void traverse_vertex_in_element(const Value& vertex_tag, BlockTree& block, GraphInfo& graph);
+    static void traverse_vertex_in(const Value& vertex_tag, BlockTree& block, GraphInfo& graph);
+    static void traverse_vertex_element(const Value& vertex_tag, BlockTree& block, GraphInfo& graph);
+    static void traverse_vertex(const Value& vertex_tag, BlockTree& block, GraphInfo& graph);
+    static void traverse_block_element(const Value& block_tag, BlockTree& parent, GraphInfo& graph);
+    static void traverse_blocks(const Value& block_tag, BlockTree& parent,  GraphInfo& graph);
     static void traverse_param_element(const Value& param_tag, GraphInfo& graph);
     static void traverse_param(const Value& param_tag, GraphInfo& graph);
     static void traverse_params(const Value& param_tag, GraphInfo& graph);

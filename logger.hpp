@@ -51,8 +51,8 @@ private:
     const std::string warn_log = "[WARNING]: ";
     const std::string func_in_log = "Enter function ";
     const std::string func_out_log = "Exit function ";
-    const std::string file_log = " In file ";
-    const std::string func_log = "In func ";
+    const std::string file_log = " in file ";
+    const std::string func_log = "in func ";
     std::vector<std::string> user_errors_;
     std::vector<std::string> user_warnings_;
 };

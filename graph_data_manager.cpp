@@ -14,40 +14,45 @@ int get_max(const std::vector<int>& levels) {
     return max_level;
 }
 
-VertexId VertexMapManager::add_vertex(Vertex* vertex) {
+VertexId VertexMapManager::add_vertex(const BlockId &blockId,
+                        const CoordType& i, const CoordType& j, const CoordType& k,
+                        const CoordType& x, const CoordType& y, const CoordType& z,
+                        const std::string& type) {
     VertexId new_vertex_id = get_new_vertex_id();
-    vertices_[new_vertex_id] = vertex;
+    vertices_[new_vertex_id] = Vertex{
+        .block_id = blockId,
+        .i = i, .j = j, .k = k,
+        .x = x, .y = y, .z = z,
+        .type = type, .level = (type == "0") ? 0 : 1
+        };
+
+    reverseVerticesMap_[blockId][Coords{.i = i, .j = j, .k = k}] = new_vertex_id;
     return new_vertex_id;
 }
 
-void EdgeMapManager::add_edge(const Edge* edge) {
-    edges_[get_new_edge_id()] = edge;
+Vertex& VertexMapManager::get_vertex(const VertexId& vertexId) {
+    return vertices_[vertexId];
 }
 
-void EdgeMapManager::get_target_vertex_ids(std::vector<VertexId>& target_vertex_ids, VertexId vertex_id) const {
-    for (const auto& edge : edges_) {
-        if (edge.second->source_vertex_id == vertex_id)
-            target_vertex_ids.push_back(edge.second->target_vertex_id);
+const VertexId& VertexMapManager::get_vertex_id(const BlockId &blockId, const CoordType& i, const CoordType& j, const CoordType& k) {
+    if (!reverseVerticesMap_[blockId].count(Coords{.i = i, .j = j, .k = k})) {
+        return invalidVertexId;
     }
+    return reverseVerticesMap_[blockId][Coords{.i = i, .j = j, .k = k}];
 }
 
-void VertexMapManager::add_vertex_level(VertexId vertex_id, int level) {
-    auto& logger = Logger::get_instance();
-    logger.log_info_msg("Vertex id = " + std::to_string(vertex_id) + " level = " + std::to_string(level));
-    vertices_[vertex_id]->level = level;
+void EdgeMapManager::add_edge(const VertexId& src, const VertexId &dst, const std::string& type) {
+    edges_[get_new_edge_id()] = Edge{.source_vertex_id=src, .target_vertex_id=dst, .type=type};
 }
 
-void VertexMapManager::add_info(VertexId vertex_id, const std::string& info) {
-    vertices_[vertex_id]->info = info;
+std::vector<VertexId> EdgeMapManager::get_target_vertex_ids(const VertexId &vertex_id) const {
+    std::vector<VertexId> res;
+    for (const auto& edge : edges_) {
+        if (edge.second.source_vertex_id == vertex_id)
+            res.push_back(edge.second.target_vertex_id);
+    }
+    return res;
 }
-
-int VertexMapManager::get_vertex_level(VertexId vertex_id) {
-    return vertices_[vertex_id]->level;
-}
-
-std::string& VertexMapManager::get_vertex_type(VertexId vertex_id) {
-    return vertices_[vertex_id]->type;
-};
 
 void GraphCharactManager::inc_level_vertex_counter(int level) {
     if (graph_charact_.each_level_vertex_num.size() <= level) {
@@ -85,16 +90,16 @@ std::string VertexMapManager::to_json() {
     result_string += "\t\"vertices\": [";
     for (const auto& vertex : vertices_) {
         std::string vertex_string = "\n\t\t{ \"id\": " + std::to_string(vertex.first) + ", \"coordinates\": [" +
-                                    std::to_string(vertex.second->i) + ", " + std::to_string(vertex.second->j) + ", " +
-                                    std::to_string(vertex.second->k) + "], \"type\": \"" + vertex.second->type + "\"" +
-                                    ", \"info\": \"" + vertex.second->info + "\"" +
-                                    ", \"level\": " + std::to_string(vertex.second->level) + " },";
+                                    std::to_string(vertex.second.x) + ", " + std::to_string(vertex.second.y) + ", " +
+                                    std::to_string(vertex.second.z) + "], \"type\": \"" + vertex.second.type + "\"" +
+                                    ", \"info\": \"" + vertex.second.info + "\"" +
+                                    ", \"level\": " + std::to_string(vertex.second.level) + " },";
         result_string += vertex_string;
     }
     if (result_string.back() != '[')
         result_string.pop_back();
     result_string += "\n\t],\n";
-    clean_map();
+    vertices_.clear();
     return result_string;
 }
 
@@ -103,15 +108,15 @@ std::string EdgeMapManager::to_json() {
     result_string += "\t\"edges\": [";
     for (const auto& edge : edges_) {
         std::string edge_string = "\n\t\t{ \"id\": " + std::to_string(edge.first) +
-                                    ", \"sourceVertexId\": " + std::to_string(edge.second->source_vertex_id) +
-                                    ", \"targetVertexId\": " + std::to_string(edge.second->target_vertex_id) +
-                                    ", \"type\": \"" + edge.second->type + "\" },";
+                                    ", \"sourceVertexId\": " + std::to_string(edge.second.source_vertex_id) +
+                                    ", \"targetVertexId\": " + std::to_string(edge.second.target_vertex_id) +
+                                    ", \"type\": \"" + edge.second.type + "\" },";
         result_string += edge_string;
     }
     if (result_string.back() != '[')
         result_string.pop_back();
     result_string += "\n\t],\n";
-    clean_map();
+    edges_.clear();
     return result_string;
 }
 
@@ -120,17 +125,5 @@ void print_json(VertexMapManager& vertices_manager, EdgeMapManager& edges_manage
     std::cout << vertices_manager.to_json();
     std::cout << edges_manager.to_json();
     std::cout << "}" << std::endl;
-}
-
-void VertexMapManager::clean_map() {
-    for (const auto& vertex : vertices_) {
-        delete vertex.second;
-    }
-}
-
-void EdgeMapManager::clean_map() {
-    for (const auto& edge : edges_) {
-        delete edge.second;
-    }
 }
 } // namespace graph_manager
