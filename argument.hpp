@@ -10,16 +10,16 @@ struct ArgTagInfo {
 };
 
 class ArgTagsInfo {
-   public:
+public:
     ArgTagsInfo();
 
     void add_arg(std::string name, int begin_value, int end_value);
-    int is_arg_name_unique(std::string name);
+    bool is_arg_name_unique(std::string name);
     void print_arg_tags() const;
     const std::vector<ArgTagInfo>& get_args() const;
 
-   private:
+private:
     int n_ = 0;
     std::vector<ArgTagInfo> arg_tags_;
 };
-}  // namespace graph_info
+} // namespace graph_info

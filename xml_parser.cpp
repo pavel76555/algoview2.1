@@ -89,4 +89,4 @@ void XML_Parser::parse(const std::string& filename) {
 const Document& XML_Parser::get_DOM_tree() {
     return DOM_tree_;
 }
-}  // namespace algoview_xml_parser
+} // namespace algoview_xml_parser

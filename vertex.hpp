@@ -9,22 +9,22 @@ struct VertexTagInfo {
     VertexType type = "1";
     std::string cond = "";
     std::vector<std::string> src;
-    std::vector<std::pair<int, std::string>> bsrc;
+    std::vector<std::pair<std::string, std::string>> bsrc;
 };
 
 class VertexTagsInfo {
-   public:
+public:
     void new_vertex();
     void add_condition(std::string cond);
     void add_type(std::string type);
     void add_src(std::string src);
-    void add_bsrc(std::pair<int, std::string> bsrc);
+    void add_bsrc(const std::string& bsrc, const std::string& src);
     const std::vector<VertexTagInfo>& get_vertices() const;
 
     void print_vertex_tags() const;
 
-   private:
+private:
     int n_ = -1;
     std::vector<VertexTagInfo> vertex_tags_;
 };
-}  // namespace graph_info
+} // namespace graph_info

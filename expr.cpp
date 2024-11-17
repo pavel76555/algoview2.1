@@ -52,4 +52,4 @@ double calc_expr(std::string expr, const std::map<std::string, double>& variable
     logger.log_file_exit(func_name, file_name);
     return result;
 }
-}  // namespace reg_expr
+} // namespace reg_expr

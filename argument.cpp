@@ -21,12 +21,12 @@ ArgTagsInfo::ArgTagsInfo() {
     }
 }
 
-int ArgTagsInfo::is_arg_name_unique(std::string name) {
+bool ArgTagsInfo::is_arg_name_unique(std::string name) {
     for (const auto& arg : arg_tags_) {
         if (arg.name == name)
-            return 0;
+            return false;
     }
-    return 1;
+    return true;
 }
 
 void ArgTagsInfo::add_arg(std::string name, int begin_value, int end_value) {
@@ -35,7 +35,6 @@ void ArgTagsInfo::add_arg(std::string name, int begin_value, int end_value) {
     logger.log_file_enter(func_name, file_name);
     logger.log_info_start_msg("adding new argument to internal structure");
     if (n_ >= 3) {
-        // std::cerr << n_;
         logger.log_err_msg(func_name, file_name, "Too many arguments");
         logger.add_user_error("Too many arguments: 3D graph only");
         auto& output_file = OutputFileManager::get_instance();
@@ -71,4 +70,4 @@ void ArgTagsInfo::print_arg_tags() const {
         std::cout << std::endl;
     }
 }
-}  // namespace graph_info
+} // namespace graph_info

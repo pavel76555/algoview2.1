@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    std::map<BlockId, Block*> block_map;
+    // std::map<BlockId, BlockInfo*> block_map;
     XML_Parser parser;
     set_up_logger(argv[1]);
     logger.log_info_msg("--------------------------1ST STEP--------------------------");
@@ -50,23 +50,22 @@ int main(int argc, char* argv[]) {
     GraphInfo graph;
     logger.log_info_msg("--------------------------2nd STEP--------------------------");
     JSON_Traverser::traverse(tree, graph);
-    // graph.print_graph();
-    BlockTagsInfo& blocks_info = graph.get_blocks();
-    const auto& blocks = blocks_info.get_blocks();
-    auto& params = graph.get_params();
+    // convert tree block to map[blockId]map[blockId]block
+    graph.rebuild_external_blocks();
+    graph.get_BlockTree().print_leaves();
+
+
+    // BlockTagsInfo& blocks_info = graph.get_blocks();
+    // const auto& blocks = blocks_info.get_blocks();
+    const auto& params = graph.get_params();
     VertexMapManager vertices_manager;
     EdgeMapManager edges_manager;
     GraphCharactManager graph_charact_manager;
-    logger.log_info_msg("--------------------------3rd STEP--------------------------");
-    int it = 0;
-    for (const auto& block : blocks) {
-        Block* new_block_ptr = new Block(block, it);
-        (*new_block_ptr).main_cycle(block, params, vertices_manager, edges_manager, graph_charact_manager, block_map);
-        block_map[block.id] = new_block_ptr;
-        it++;
-    }
-    for (const auto& block : block_map) {
-        delete block.second;
+    // logger.log_info_msg("--------------------------3rd STEP--------------------------");
+    // int it = 0;
+    for (auto &external_block : graph.get_BlockTree().get_childen()) {
+        ExternalBlock block;
+        block.main_cycle(external_block, params, vertices_manager, edges_manager, graph_charact_manager);
     }
     output_file.write("{" + graph_charact_manager.to_json() + vertices_manager.to_json() + edges_manager.to_json() +
                       logger.warn_to_json() + logger.err_to_json() + "}");
@@ -76,7 +75,6 @@ int main(int argc, char* argv[]) {
 // добавить const в print и get методы
 // сделать файл с test mode
 // возможно сделать методы парсера статиками
-// привести в порядок make file
 // добавить вывод ошибки подсчёта регулярного выражения
 // calc_expr была шаблонной, но не компилировалась, теперь обрабатывает только double(?)
 // переписать asserts (?)

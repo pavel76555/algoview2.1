@@ -6,6 +6,10 @@ void GraphInfo::add_param(std::string name, int value) {
     params_[name] = value;
 }
 
+void GraphInfo::rebuild_external_blocks() {
+    blocks_.rebuild_external_blocks();
+}
+
 void GraphInfo::print_params() const {
     std::cout << "\t\t\tPARAMS" << std::endl;
     for (const auto& param : params_) {
@@ -15,14 +19,11 @@ void GraphInfo::print_params() const {
 
 void GraphInfo::print_graph() const {
     print_params();
-    blocks_.print_block_tags();
+    blocks_.print_leaves();
 }
 
 ParamsMap& GraphInfo::get_params() {
     return params_;
 }
 
-BlockTagsInfo& GraphInfo::get_blocks() {
-    return blocks_;
-}
-}  // namespace graph_info
+} // namespace graph_info

@@ -4,7 +4,8 @@
 
 namespace logger {
 
-Logger::Logger() {}
+Logger::Logger() {
+}
 
 void Logger::set_outdata_flow(std::string& file_name) {
     log_file_.open(file_name);
@@ -79,4 +80,4 @@ std::string Logger::err_to_json() {
     }
     return result_string;
 }
-}  // namespace logger
+} // namespace logger

@@ -6,7 +6,7 @@
 namespace logger {
 
 class Logger {
-   public:
+public:
     static Logger& get_instance() {
         static Logger instance;
         return instance;
@@ -30,15 +30,19 @@ class Logger {
 
     void log_warn_msg(const std::string& func_name, const std::string& file_name, const std::string& msg);
 
-    void add_user_error(std::string error) { user_errors_.push_back(error); };
+    void add_user_error(std::string error) {
+        user_errors_.push_back(error);
+    };
 
-    void add_user_warning(std::string warning) { user_warnings_.push_back(warning); };
+    void add_user_warning(std::string warning) {
+        user_warnings_.push_back(warning);
+    };
 
     std::string err_to_json();
 
     std::string warn_to_json();
 
-   private:
+private:
     Logger();
     ~Logger();
     std::ofstream log_file_;
@@ -47,10 +51,10 @@ class Logger {
     const std::string warn_log = "[WARNING]: ";
     const std::string func_in_log = "Enter function ";
     const std::string func_out_log = "Exit function ";
-    const std::string file_log = " In file ";
-    const std::string func_log = "In func ";
+    const std::string file_log = " in file ";
+    const std::string func_log = "in func ";
     std::vector<std::string> user_errors_;
     std::vector<std::string> user_warnings_;
 };
 
-}  // namespace logger
+} // namespace logger
