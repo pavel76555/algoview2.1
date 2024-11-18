@@ -108,7 +108,7 @@ void ExternalBlock::main_cycle(BlockTree& blocks, const ParamsMap& params,
 
     int max_shift = 0;
 
-    logger.log_info_start_msg("iterating external for");
+    logger.log_info_start_msg("iterating external for block " + blocks.id);
     auto &blockArgs = blocks.get_args();
     if (blockArgs.get_args().empty() && blocks.get_childen().size() == 1) {
         blockArgs = blocks.get_childen()[0].get_args();
@@ -119,20 +119,20 @@ void ExternalBlock::main_cycle(BlockTree& blocks, const ParamsMap& params,
     for (int i = args[0].begin; i <= args[0].end; ++i) {
         for (const auto &block : blocks.get_childen()) {
             const auto &local_args = block.get_args().get_args();
-
+            logger.log_info_start_msg("start iterating in block " + block.id + " with " + args[0].name + "=" + std::to_string(i));
             int y_block_shift = 0;
             for (int j = local_args[1].begin; j <= local_args[1].end; ++j) {
                 for (int k = local_args[2].begin; k <= local_args[2].end; ++k) {
                     // assert len(vertices) <= 1
                     for (const auto &vertex : block.get_vertices().get_vertices()) {
-                        if (args[0].name != "_") {
-                            change_var_value_map(args[0].name, i, varsMap);
+                        if (local_args[0].name != "_") {
+                            change_var_value_map(local_args[0].name, i, varsMap);
                         }
-                        if (args[1].name != "_") {
-                            change_var_value_map(args[1].name, j, varsMap);
+                        if (local_args[1].name != "_") {
+                            change_var_value_map(local_args[1].name, j, varsMap);
                         }
-                        if (args[2].name != "_") {
-                            change_var_value_map(args[2].name, k, varsMap);
+                        if (local_args[2].name != "_") {
+                            change_var_value_map(local_args[2].name, k, varsMap);
                         }
                         logger.log_info_start_msg("calculating condition " + vertex.cond);
                         double cond = calc_expr(vertex.cond, varsMap);
@@ -140,7 +140,7 @@ void ExternalBlock::main_cycle(BlockTree& blocks, const ParamsMap& params,
                         logger.log_info_finish_msg("calculating condition");
 
                         if (cond) {
-                            VertexId vertexId = verticesManager.add_vertex(block.id, i, j, k, x_block_shift + k - 1, y_block_shift, z_block_shift, vertex.type);
+                            VertexId vertexId = verticesManager.add_vertex(block.id, i, j, k, x_block_shift + k - args[0].begin, y_block_shift, z_block_shift, vertex.type);
                             graphCharactManager.inc_vertices_counter();
                             std::vector<int> src_vertices_levels;
 
@@ -168,17 +168,17 @@ void ExternalBlock::main_cycle(BlockTree& blocks, const ParamsMap& params,
                             }
                         }
                     }
-                    max_shift = std::max(max_shift, x_block_shift + k);
+                    max_shift = std::max(max_shift, x_block_shift + k - args[0].begin);
                 }
                 y_block_shift++;
             }
-
+            logger.log_info_finish_msg("start iterating in block " + block.id + " with " + args[0].name + "=" + std::to_string(i));
             z_block_shift++;
         }
     }
-    x_block_shift += max_shift + 2;
+    x_block_shift = max_shift + 2;
 
-    logger.log_info_finish_msg("iterating external for");
+    logger.log_info_finish_msg("iterating external for block " + blocks.id);
     logger.log_file_exit(__func__, __FILE__);
 }
 } // namespace graph
