@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
     JSON_Traverser::traverse(tree, graph);
     // convert tree block to map[blockId]map[blockId]block
     graph.rebuild_external_blocks();
-    graph.get_BlockTree().print_leaves();
+    // graph.get_BlockTree().print_leaves();
 
 
     // BlockTagsInfo& blocks_info = graph.get_blocks();
