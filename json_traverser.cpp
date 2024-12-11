@@ -296,12 +296,11 @@ void JSON_Traverser::traverse_vertex(const Value& vertex_tag, BlockTree& block, 
     logger.log_file_enter(__func__, __FILE__);
     logger.log_info_start_msg("traversing verticies");
 
-    // DEPRECATED
-    // if (vertex_tag.IsArray()) {
-    //     for (SizeType i = 0; i < vertex_tag.Size(); i++) {
-    //         traverse_vertex_element(vertex_tag[i], block, graph);
-    //     }
-    if (vertex_tag.IsObject()) {
+    if (vertex_tag.IsArray()) {
+        for (SizeType i = 0; i < vertex_tag.Size(); i++) {
+            traverse_vertex_element(vertex_tag[i], block, graph);
+        }
+    } else if (vertex_tag.IsObject()) {
         traverse_vertex_element(vertex_tag, block, graph);
     } else {
         logger.log_err_msg(__func__, __FILE__, "Vertex tag has undefined type");
