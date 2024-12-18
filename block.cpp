@@ -98,22 +98,25 @@ void BlockTree::print_leaves() const {
 
 void BlockTree::rebuild_external_blocks() {
     for (auto &child: children_) {
+        int max_dim = child.dim;
         std::vector<BlockTree> leaves;
-        child.collect_leaves(leaves);
+        child.collect_leaves(leaves, max_dim);
 
         child.children_ = leaves;
         child.childrenIds_.clear();
+        child.dim = max_dim;
     }
 }
 
-void BlockTree::collect_leaves(std::vector<BlockTree> &res) {
+void BlockTree::collect_leaves(std::vector<BlockTree> &res, int &max_dim) {
+    max_dim = std::max(max_dim, dim);
     if (children_.empty()) {
         res.push_back(std::move(*this));
         return;
     }
 
     for (auto &child : children_) {
-        child.collect_leaves(res);
+        child.collect_leaves(res, max_dim);
     }
 }
 

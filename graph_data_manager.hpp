@@ -61,6 +61,7 @@ public:
                         const std::string& type);
     Vertex& get_vertex(const VertexId& vertexId);
     const VertexId& get_vertex_id(const BlockId &blockId, const CoordType& i, const CoordType& j, const CoordType& k);
+    void print_reverse_vertices_map();
 
     std::string to_json();
 private:

@@ -120,6 +120,14 @@ std::string EdgeMapManager::to_json() {
     return result_string;
 }
 
+void VertexMapManager::print_reverse_vertices_map() {
+    for (const auto &[block, blockInfo] : reverseVerticesMap_) {
+        for (const auto &[coord, id] : blockInfo) {
+            printf("[%s] (%d, %d, %d) - %d\n", block.c_str(), coord.i, coord.j, coord.k, id);
+        }
+    }
+}
+
 void print_json(VertexMapManager& vertices_manager, EdgeMapManager& edges_manager) {
     std::cout << "{";
     std::cout << vertices_manager.to_json();

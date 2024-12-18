@@ -27,7 +27,7 @@ public:
     bool has_child_with_id(BlockId id) const { return childrenIds_.count(id); }
 
     void rebuild_external_blocks();
-    void collect_leaves(std::vector<BlockTree> &);
+    void collect_leaves(std::vector<BlockTree> &, int &);
 
     VertexTagsInfo& get_vertices() { return vertices_; }
     const VertexTagsInfo& get_vertices() const { return vertices_; }

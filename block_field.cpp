@@ -115,24 +115,43 @@ void ExternalBlock::main_cycle(BlockTree& blocks, const ParamsMap& params,
     }
     const auto &args = blockArgs.get_args();
 
+    int args_offset = 0;
+    if (blocks.get_childen().size() > 1 && blocks.dim < 3) {
+        args_offset = -1;
+    }
+
     int z_block_shift = 0;
-    for (int i = args[0].begin; i <= args[0].end; ++i) {
+    int i_begin = args[0].begin, i_end = args[0].end;
+    if (args_offset) {
+        i_begin = 0;
+        i_end = blocks.get_childen().size() - 1;
+    }
+
+    for (int i = i_begin; i <= i_end; ++i) {
         for (const auto &block : blocks.get_childen()) {
+            if (args_offset) {
+                ++i;
+            }
             const auto &local_args = block.get_args().get_args();
             logger.log_info_start_msg("start iterating in block " + block.id + " with " + args[0].name + "=" + std::to_string(i));
             int y_block_shift = 0;
-            for (int j = local_args[1].begin; j <= local_args[1].end; ++j) {
-                for (int k = local_args[2].begin; k <= local_args[2].end; ++k) {
-                    // assert len(vertices) <= 1
+            for (int j = local_args[args_offset + 1].begin; j <= local_args[args_offset + 1].end; ++j) {
+                for (int k = local_args[args_offset + 2].begin; k <= local_args[args_offset + 2].end; ++k) {
+                    int correct_i = i, correct_j = j, correct_k = k;
+                        if (args_offset) {
+                            correct_i = j;
+                            correct_j = k;
+                            correct_k = 0;
+                        }
                     for (const auto &vertex : block.get_vertices().get_vertices()) {
                         if (local_args[0].name != "_") {
-                            change_var_value_map(local_args[0].name, i, varsMap);
+                            change_var_value_map(local_args[0].name, correct_i, varsMap);
                         }
                         if (local_args[1].name != "_") {
-                            change_var_value_map(local_args[1].name, j, varsMap);
+                            change_var_value_map(local_args[1].name, correct_j, varsMap);
                         }
                         if (local_args[2].name != "_") {
-                            change_var_value_map(local_args[2].name, k, varsMap);
+                            change_var_value_map(local_args[2].name, correct_k, varsMap);
                         }
                         logger.log_info_start_msg("calculating condition " + vertex.cond);
                         double cond = calc_expr(vertex.cond, varsMap);
@@ -140,7 +159,7 @@ void ExternalBlock::main_cycle(BlockTree& blocks, const ParamsMap& params,
                         logger.log_info_finish_msg("calculating condition");
 
                         if (cond) {
-                            VertexId vertexId = verticesManager.add_vertex(block.id, i, j, k, x_block_shift + k - args[0].begin, y_block_shift, z_block_shift, vertex.type);
+                            VertexId vertexId = verticesManager.add_vertex(block.id, correct_i, correct_j, correct_k, x_block_shift + k - local_args[args_offset + 2].begin, y_block_shift, z_block_shift, vertex.type);
                             graphCharactManager.inc_vertices_counter();
                             std::vector<int> src_vertices_levels;
 
@@ -153,7 +172,6 @@ void ExternalBlock::main_cycle(BlockTree& blocks, const ParamsMap& params,
                                     logger.add_user_warning(msg);
                                     continue;
                                 }
-
                                 src_vertices_levels.push_back(verticesManager.get_vertex(src_vertex_id).level);
                                 create_edge(src_vertex_id, vertexId, edgesManager, graphCharactManager, verticesManager);
                             }
@@ -168,7 +186,7 @@ void ExternalBlock::main_cycle(BlockTree& blocks, const ParamsMap& params,
                             }
                         }
                     }
-                    max_shift = std::max(max_shift, x_block_shift + k - args[0].begin);
+                    max_shift = std::max(max_shift, x_block_shift + k - local_args[args_offset + 2].begin + 1);
                 }
                 y_block_shift++;
             }
