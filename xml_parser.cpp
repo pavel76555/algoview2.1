@@ -42,7 +42,15 @@ void XML_Parser::xml_to_json() {
 
     std::ostringstream oss;
     oss << file_.rdbuf();
-    json_str_ = xml2json(oss.str().data());
+    try {
+        json_str_ = xml2json(oss.str().data());
+    } catch(...) {
+        logger.log_err_msg(func_name, file_name, "Can't convert xml file to json");
+        logger.add_user_error("Invalid xml file format");
+        auto& output_file = OutputFileManager::get_instance();
+        output_file.fatal_error_report();
+        exit(1);
+    }
 
     logger.log_info_msg("Finish converting xml to json successfully");
     logger.log_file_exit(func_name, file_name);
