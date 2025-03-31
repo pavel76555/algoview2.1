@@ -140,12 +140,12 @@ void JSON_Traverser::traverse_arg_element(const Value& arg_tag, BlockTree& block
     parse_value(arg_tag["@val"].GetString(), begin_expr, end_expr, '.');
     std::string msg = "After parsing : begin = " + begin_expr + "\tend = " + end_expr;
     logger.log_info_msg(msg);
-    double begin = calc_expr(begin_expr, params);
-    double end = calc_expr(end_expr, params);
-    msg.clear();
-    msg = "After calculations : begin = " + std::to_string(begin) + "\tend = " + std::to_string(end);
-    logger.log_info_msg(msg);
-    args.add_arg(arg_tag["@name"].GetString(), (int)begin, (int)end);
+    // double begin = calc_expr(begin_expr, params);
+    // double end = calc_expr(end_expr, params);
+    // msg.clear();
+    // msg = "After calculations : begin = " + std::to_string(begin) + "\tend = " + std::to_string(end);
+    // logger.log_info_msg(msg);
+    args.add_arg(arg_tag["@name"].GetString(), begin_expr, end_expr);
 
     logger.log_file_exit(__func__, __FILE__);
 }

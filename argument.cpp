@@ -17,7 +17,7 @@ const std::vector<ArgTagInfo>& ArgTagsInfo::get_args() const {
 
 ArgTagsInfo::ArgTagsInfo() {
     for (int i = 0; i < 3; i++) {
-        arg_tags_.push_back(ArgTagInfo{"_", 0, 0});
+        arg_tags_.push_back(ArgTagInfo{"_", "0", "0"});
     }
 }
 
@@ -29,7 +29,7 @@ bool ArgTagsInfo::is_arg_name_unique(std::string name) {
     return true;
 }
 
-void ArgTagsInfo::add_arg(std::string name, int begin_value, int end_value) {
+void ArgTagsInfo::add_arg(std::string name, std::string begin_value, std::string end_value) {
     const std::string func_name = "add_arg";
     auto& logger = Logger::get_instance();
     logger.log_file_enter(func_name, file_name);
@@ -44,13 +44,6 @@ void ArgTagsInfo::add_arg(std::string name, int begin_value, int end_value) {
     if (!is_arg_name_unique(name)) {
         logger.log_err_msg(func_name, file_name, "Arg name is used twice in the same block");
         logger.add_user_error("Arg name is used twice in the same block");
-        auto& output_file = OutputFileManager::get_instance();
-        output_file.fatal_error_report();
-        exit(1);
-    }
-    if (!(begin_value <= end_value)) {
-        logger.log_err_msg(func_name, file_name, "Invalid arg value range");
-        logger.add_user_error("Invalid argument value range: end value greater that begin value");
         auto& output_file = OutputFileManager::get_instance();
         output_file.fatal_error_report();
         exit(1);
