@@ -116,10 +116,10 @@ void ExternalBlock::main_cycle(BlockTree& blocks, const ParamsMap& params,
     const auto &args = blockArgs.get_args();
 
     int args_offset = 0;
-    // работает некорректно, нужно фиксить
-    // if (blocks.dim < 3) {
-    //     args_offset = -1;
-    // }
+    // уменьшает размерность (работает на самом деле не совсем корректно...)
+    if (blocks.dim < 3) {
+        args_offset = -1;
+    }
 
     int z_block_shift = 0;
 
